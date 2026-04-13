@@ -108,3 +108,5 @@ if ($id_video > 0) {
 </div>
 
 <?php include 'includes/footer.php'; ?>
+</body>
+</html>
