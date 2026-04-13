@@ -1,0 +1,179 @@
+/* --- VARIABLES --- */
+:root {
+    --azul-tervi: #0056b3;
+    --azul-dark: #003d7a;
+    --dorado: #D4AF37;
+    --blanco: #ffffff;
+    --negro-texto: #1a1a1a; /* Negro suave para mejor lectura */
+    --gris-suave: #f8f9fa;
+}
+
+/* --- HERO (ENCABEZADO): TEXTO EN BLANCO --- */
+.hero-section {
+    background: linear-gradient(135deg, var(--azul-tervi) 0%, var(--azul-dark) 100%);
+    color: var(--blanco); /* Letras blancas aquí */
+    padding: 100px 20px;
+    text-align: center;
+    border-bottom: 8px solid var(--dorado);
+}
+
+.hero-section h1 {
+    font-size: 3.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--blanco);
+    text-shadow: 2px 2px 0px var(--azul-dark);
+}
+
+.hero-section p {
+    color: var(--blanco);
+    opacity: 0.95;
+}
+
+/* --- GRID DE CONTENIDO --- */
+.container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.grid-conceptos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* --- CARDS: ESTILO LIMPIO Y MODERNO --- */
+.concepto-card {
+    background: var(--blanco);
+    padding: 30px;
+    border-radius: 20px; /* Bordes redondeados más orgánicos */
+    border: 1px solid #edf2f7;
+    box-shadow: var(--sombra-card);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.concepto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(11, 11, 11, 0.15);
+}
+
+/* Decoración lateral discreta */
+.concepto-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--azul-tervi);
+}
+
+/* --- CABECERA DE CARD (Badges) --- */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.badge { 
+    padding: 5px 15px; 
+    border-radius: 50px; /* Estilo píldora */
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    text-transform: uppercase;
+}
+
+/* Colores dinámicos para dificultad */
+.badge.Principiante { background: #e3f2fd; color: #1976d2; }
+.badge.Intermedio { background: #fff3e0; color: #f57c00; }
+.badge.Avanzado { background: #ffebee; color: #d32f2f; }
+
+/* --- TEXTOS --- */
+.concepto-card h3 {
+    color: var(--azul-dark);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.concepto-card p {
+    color: var(--texto-p);
+    line-height: 1.6;
+    margin-bottom: 25px;
+    flex-grow: 1; /* Empuja las stats hacia abajo */
+}
+
+/* --- ESTADÍSTICAS: "LOOK DE APP" --- */
+.stats-grid { 
+    display: flex; 
+    background: var(--gris-suave);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item { 
+    flex: 1; 
+    text-align: center;
+}
+
+.stat-item:first-child { 
+    border-right: 2px solid #e9ecef; 
+}
+
+.stat-val { 
+    display: block; 
+    font-size: 1.8rem; 
+    font-weight: 800; 
+    color: var(--azul-tervi);
+}
+
+.stat-label { 
+    font-size: 0.7rem; 
+    color: #adb5bd; 
+    text-transform: uppercase; 
+    font-weight: 700;
+}
+
+/* --- ALERTA DE RECOMENDACIÓN --- */
+.precaucion-box {
+    background: #fffafa; 
+    padding: 15px; 
+    border-radius: 12px; 
+    border: 1px dashed #fab1a0; 
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.precaucion-box strong {
+    color: #e17055;
+    display: block;
+    margin-bottom: 3px;
+}
+
+/* Contenedor de la imagen del ejercicio */
+.ejercicio-img-container {
+    width: 100%;
+    height: 200px; /* Altura fija para que todas las cards midan lo mismo */
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 15px 0;
+    border: 1px solid #eee;
+}
+
+.ejercicio-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Esto hace que la imagen se adapte sin deformarse */
+    transition: transform 0.5s ease;
+}
+
+.concepto-card:hover .ejercicio-foto {
+    transform: scale(1.1); /* Efecto de zoom suave al pasar el mouse */
+}

@@ -9,8 +9,9 @@ if (!isset($_SESSION['admin_auth'])) {
 }
 
 $titulo_form = "✨ Agregar Nuevo Contenido";
-$datos = ['titulo' => '', 'descripcion' => '', 'tipo_contenido' => 'Concepto', 'slug' => '', 'imagen_url' => '', 'audio_url' => ''];
+$datos = ['titulo' => '', 'descripcion' => '', 'tipo_contenido' => 'Concepto', 'slug' => '', 'imagen_url' => ''];
 $id_form = 0;
+$seccion = 'conceptos';
 
 if (isset($_GET['edit'])) {
     $id_form = intval($_GET['edit']);
@@ -90,8 +91,8 @@ if (isset($_GET['edit'])) {
         <h1 style="text-align:center; color:#2c3e50;"><?= $titulo_form ?></h1>
 
         <div class="card">
-            <form action="procesar_admin.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id_contenido" value="<?= $id_form ?>">
+         <form action="procesos/procesar_contenido.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id_contenido" value="<?= $id_form ?>">
 
                 <div class="form-group">
                     <label>Título del Contenido</label>
@@ -117,7 +118,7 @@ if (isset($_GET['edit'])) {
                         <?php if(!empty($datos['imagen_url'])): ?>
                             <div class="preview-media">
                                 <small>Actual:</small><br>
-                                <img src="assets/img/<?= $datos['imagen_url'] ?>" width="100">
+                                <img src="../assets/img/<?= $datos['imagen_url'] ?>" width="100">
                             </div>
                         <?php endif; ?>
                         <input type="file" name="imagen" accept="image/*">
@@ -130,7 +131,7 @@ if (isset($_GET['edit'])) {
                     <input type="text" name="slug" value="<?= $datos['slug'] ?>" placeholder="ej: cuidados-basicos">
                 </div>
 
-                <button type="submit" name="guardar_contenido" class="btn-save">🚀 Guardar Contenido</button>
+                <button type="submit" name="procesar_contenido" class="btn-save">🚀 Guardar Contenido</button>
                 
                 <a href="admin.php?sec=conceptos" style="display:block; text-align:center; margin-top:20px; color:#95a5a6; text-decoration:none;">← Volver sin guardar</a>
             </form>

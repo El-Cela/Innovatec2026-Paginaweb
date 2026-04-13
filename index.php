@@ -17,8 +17,8 @@
                 <h1>Tu nueva etapa <br>comienza hoy</h1>
                 <p>Acompañamos tu proceso de rehabilitación con guías diseñadas para recuperar tu independencia y mejorar tu calidad de vida.</p>
                 <div class="hero-buttons">
-                    <a href="ejercicios.php" class="btn-primary">Ejercicios de Adaptación</a>
-                    <a href="sobre-nosotros.php" class="btn-outline">Nuestra Misión</a>
+                    <a href="ejercicio.php" class="btn-primary">Ejercicios de Adaptación</a>
+                    <a href="sobre_nosotros.php" class="btn-outline">Nuestra Misión</a>
                 </div>
             </div>
         </section>

@@ -1,0 +1,246 @@
+:root {
+    /* Paleta TERVI Original */
+    --azul-oscuro: #011223ed;    
+    --azul-medio: #81B2D2;     
+    --celeste-claro: #C1E3F4;  
+    --crema: #F3D5B5;          
+    --blanco: #ffffff;
+    --negro-hero: #0056b3; 
+    
+    --borde-impacto: 4px solid var(--azul-oscuro);
+    --sombra-azul: 8px 8px 0px var(--azul-medio);
+    --sombra-crema: 8px 8px 0px var(--crema);
+}
+
+/* --- 1. HERO TOTALMENTE NEGRO (FULL WIDTH) --- */
+.seccion-intro {
+    background-color: var(--negro-hero);
+    color: var(--blanco);
+    padding: 100px 0;
+    margin-bottom: 60px;
+    /* Truco para que el fondo negro ignore el contenedor y llegue a las orillas */
+    inline-size: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-inline-start: -50vw;
+    margin-inline-end: -50vw;
+}
+
+.intro-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.intro-texto h2 {
+    font-size: 4.5rem;
+    color: var(--blanco);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    text-transform: uppercase;
+}
+
+/* --- 2. MISIÓN, VISIÓN Y VALORES EN UNA SOLA LÍNEA --- */
+.mvv-container {
+    display: flex; /* Forzamos el flujo horizontal */
+    flex-wrap: nowrap; 
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 80px;
+    overflow-x: auto; /* Por si el contenido crece mucho en tablets */
+}
+
+.mvv-card {
+    flex: 1; /* Todas las tarjetas del mismo ancho */
+    min-width: 280px;
+    max-width: 350px;
+    background: var(--celeste-claro);
+    color: var(--azul-oscuro);
+    padding: 40px 30px;
+    border: var(--borde-impacto);
+    box-shadow: var(--sombra-azul);
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* --- 3. EQUIPO Y ASESORES (CON SEPARACIÓN) --- */
+.titulo-sub {
+    color: var(--azul-oscuro);
+    margin: 80px 0 30px; /* Mucho más espacio arriba para separar de los Desarrolladores */
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 4px solid var(--crema);
+    display: block;
+}
+
+.grid-equipo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+    gap: 20px;
+    justify-content: center;
+}
+
+/* --- 4. MENÚ HAMBURGUESA Y RESPONSIVO --- */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 30px;
+    height: 4px;
+    background: var(--azul-oscuro);
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .seccion-intro {
+        inline-size: 100%;
+        margin-inline: 0;
+        left: 0;
+    }
+    .intro-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .mvv-container {
+        flex-wrap: wrap; /* En celulares sí se bajan una debajo de otra */
+    }
+    .menu-toggle {
+        display: flex; /* Mostramos el botón en celulares */
+    }
+}
+/* --- Contenedor Principal --- */
+.tech-diagram-section {
+    padding: 40px 20px;
+    background-color: #ffffff;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo-diagrama {
+    font-size: 24px;
+    color: #1a2b4b;
+    margin-bottom: 40px;
+    font-weight: 800;
+}
+
+/* --- Área del Diagrama --- */
+.diagrama-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 750px;
+    height: 450px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Estilo Base de los Nodos (ESTÁTICOS) --- */
+.tech-item-pro {
+    position: absolute;
+    padding: 12px 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-weight: bold;
+    color: #1a2b4b;
+    font-size: 14px;
+    z-index: 2;
+    min-width: 160px;
+    /* Quitamos transition y transform de aquí para evitar saltos */
+}
+
+/* ELIMINADO EL HOVER QUE CAUSABA EL MOVIMIENTO */
+
+/* --- El Núcleo TERVI --- */
+.centro {
+    background: #1a2b4b;
+    color: white;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    border: 5px solid #fff;
+    z-index: 10;
+}
+
+/* --- POSICIONAMIENTO Y COLORES ESPECÍFICOS --- */
+
+/* 1. ARRIBA */
+.pos-tl { 
+    top: 0; 
+    left: 50%; 
+    transform: translateX(-50%); /* Mantiene el centrado */
+    border-bottom: 4px solid #3498db;
+}
+
+/* 2. LADO IZQUIERDO */
+.pos-tr { 
+    left: 0; 
+    top: 50%; 
+    transform: translateY(-50%); /* Mantiene el centrado vertical */
+    border-right: 4px solid #a29bfe;
+}
+
+/* 3. LADO DERECHO */
+.pos-r { 
+    right: 0; 
+    top: 50%; 
+    transform: translateY(-50%); /* Mantiene el centrado vertical */
+    border-left: 4px solid #fab1a0;
+}
+
+/* 4. ABAJO IZQUIERDA */
+.pos-bl { 
+    bottom: 0; 
+    left: 10%; 
+    border-top: 4px solid #6c5ce7;
+}
+
+/* 5. ABAJO DERECHA */
+.pos-br { 
+    bottom: 0; 
+    right: 10%; 
+    border-top: 4px solid #00b894;
+}
+
+.linea { display: none; }
+
+/* --- Responsivo --- */
+@media (max-width: 768px) {
+    .diagrama-wrapper {
+        height: auto;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px 0;
+    }
+    .tech-item-pro, .centro {
+        position: static;
+        width: 90%;
+        max-width: 300px;
+        transform: none !important;
+        margin: 0 auto;
+        border: 1px solid #eee;
+        border-left: 5px solid #0056b3;
+    }
+    .centro { order: -1; margin-bottom: 20px; }
+}

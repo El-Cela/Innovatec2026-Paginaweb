@@ -1,0 +1,218 @@
+/* --- VARIABLES --- */
+:root {
+    --azul-tervi: #0056b3;
+    --azul-dark: #003d7a;
+    --dorado: #D4AF37;
+    --blanco: #ffffff;
+    --negro-texto: #1a1a1a; /* Negro suave para mejor lectura */
+    --gris-suave: #f8f9fa;
+}
+
+/* --- HERO (ENCABEZADO): TEXTO EN BLANCO --- */
+.hero-section {
+    background: linear-gradient(135deg, var(--azul-tervi) 0%, var(--azul-dark) 100%);
+    color: var(--blanco); /* Letras blancas aquí */
+    padding: 100px 20px;
+    text-align: center;
+    border-bottom: 8px solid var(--dorado);
+}
+
+.hero-section h1 {
+    font-size: 3.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--blanco);
+    text-shadow: 2px 2px 0px var(--azul-dark);
+}
+
+.hero-section p {
+    color: var(--blanco);
+    opacity: 0.95;
+}
+
+/* --- GRID DE CONTENIDO --- */
+.container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.grid-conceptos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.video-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.video-player-container {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.video-info h2 {
+    color: var(--azul-tervi);
+    margin: 20px 0 10px;
+    font-size: 2rem;
+}
+
+/* Sidebar Playlist */
+.playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.playlist-item {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #eee;
+    transition: 0.3s;
+}
+
+.playlist-item.active {
+    border-color: var(--dorado);
+    background: #fffbef;
+}
+
+/* --- SECCIÓN DE COMENTARIOS --- */
+.comments-section {
+    margin-top: 50px;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.comments-section h3 {
+    color: #0a2540;
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 10px;
+}
+
+/* --- FORMULARIO DE COMENTARIOS --- */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: 0.3s;
+}
+
+.comment-form textarea:focus {
+    border-color: #0a2540;
+    outline: none;
+    box-shadow: 0 0 10px rgba(10, 37, 64, 0.1);
+}
+
+/* --- BOTONES MODERNOS --- */
+.btn-submit-comment {
+    align-self: flex-end; /* Lo alinea a la derecha */
+    background-color: #0a2540;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-comment:hover {
+    background-color: #1a4a7a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(10, 37, 64, 0.2);
+}
+
+/* --- LISTA DE COMENTARIOS (BURBUJAS) --- */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment-card {
+    background: #f8fbff;
+    padding: 20px;
+    border-radius: 0 15px 15px 15px; /* Forma de burbuja de chat */
+    border-left: 5px solid #0a2540;
+    position: relative;
+    transition: 0.3s;
+}
+
+.comment-card:hover {
+    background: #f0f5fa;
+}
+
+.comment-card p {
+    color: #334e68;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.comment-card small {
+    display: block;
+    color: #9fb3c8;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* --- BOTONES DE ACCIÓN (GENERAL) --- */
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-block;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.btn-edit:hover {
+    background-color: #1976d2;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.btn-delete:hover {
+    background-color: #c62828;
+    color: white;
+}
