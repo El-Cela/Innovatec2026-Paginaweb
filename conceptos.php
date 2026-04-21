@@ -1,6 +1,6 @@
 <?php 
 include 'includes/header.php'; 
-// Simulación de conexión (Asegúrate de tener tu config.php)
+// Simulación de conexión 
 $conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion");
 $query_conceptos = mysqli_query($conexion, "SELECT * FROM contenidos WHERE tipo_contenido = 'Concepto' ORDER BY id_contenido ASC");
 $query_info = mysqli_query($conexion, "SELECT * FROM contenidos WHERE tipo_contenido = 'Guía' ORDER BY id_contenido ASC");

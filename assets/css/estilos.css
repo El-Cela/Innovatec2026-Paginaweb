@@ -672,3 +672,90 @@ a:focus, button:focus {
     }
     .footer-info p { margin: 0 auto; }
 }
+
+.btn-buy {
+    background: linear-gradient(135deg, #D4AF37, #FFD700); /* Color dorado */
+    color: #000 !important;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    transition: 0.3s;
+}
+
+.btn-buy:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+/* Contenedor principal */
+.nav-especial {
+    position: relative !important;
+    display: inline-block !important;
+}
+
+/* El botón principal de MI SALUD */
+.perfil-usuario {
+    font-weight: bold;
+    color: #00060c !important;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+/* EL SUBMENÚ: Forzamos a que sea vertical y oculto */
+.sub-menu-salud {
+    display: none; /* Oculto por defecto */
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    background-color: #ffffff !important;
+    min-width: 200px !important;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.2) !important;
+    border-radius: 12px !important;
+    padding: 10px 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+    z-index: 9999 !important;
+    flex-direction: column !important; /* FUERZA VERTICAL */
+}
+
+/* Forzamos que cada li ocupe todo el ancho y no se ponga de lado */
+.sub-menu-salud li {
+    width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important; /* Por si usas floats */
+}
+
+.sub-menu-salud li a {
+    padding: 12px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    color: #333 !important;
+    text-align: left !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.sub-menu-salud li a:hover {
+    background-color: #f0f7ff !important;
+}
+
+/* El submenú siempre inicia oculto */
+.sub-menu-salud {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    /* ... tus otros estilos ... */
+}
+
+/* Solo se muestra cuando JS añade esta clase */
+.sub-menu-salud.mostrar-menu {
+    display: flex !important;
+}

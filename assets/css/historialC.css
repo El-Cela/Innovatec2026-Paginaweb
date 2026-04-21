@@ -1,0 +1,83 @@
+/* Contenedor General con estilo de fondo */
+.container-medical {
+    max-width: 900px;
+    margin: 120px auto 50px;
+    padding: 0 20px;
+}
+
+/* Tarjetas transformadas en "Hojas de Papel" */
+.card-medical {
+    background: #ffffff;
+    padding: 50px; /* Más espacio para que parezca hoja */
+    border: 1px solid #ddd;
+    box-shadow: 10px 10px 0px #e1e8ed; /* Sombra sólida tipo receta */
+    margin-bottom: 40px;
+    position: relative;
+    font-family: 'Courier New', Courier, monospace; /* Tipografía médica */
+}
+
+/* Títulos estilo encabezado de clínica */
+.card-medical h1, .card-medical h3 {
+    color: #2e86c1;
+    border-bottom: 2px solid #2e86c1;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Grid de datos (Ficha de identificación) */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+/* Items de información estilo "campos de formulario" */
+.info-item {
+    background: none;
+    border-bottom: 1px dashed #999; /* Línea para llenar a mano */
+    padding: 5px 0;
+}
+
+.info-item strong {
+    font-size: 0.75rem;
+    color: #2e86c1;
+}
+
+.info-item span {
+    font-size: 1rem;
+    color: #000;
+}
+
+/* Tabla del recetario con estilo de líneas guía */
+.medical-table {
+    width: 100%;
+    margin-top: 20px;
+    border: none;
+}
+
+.medical-table th {
+    background: none;
+    border-bottom: 2px solid #333;
+    color: #2e86c1;
+    text-align: left;
+}
+
+.medical-table td {
+    padding: 15px 5px;
+    border-bottom: 1px solid #eee;
+    background: repeating-linear-gradient(white, white 24px, #f9f9f9 25px); /* Efecto libreta */
+}
+
+@media print {
+    header, .menu, .sidebar, button, .no-print {
+        display: none !important;
+    }
+    .hoja-medica, .card-medical {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}

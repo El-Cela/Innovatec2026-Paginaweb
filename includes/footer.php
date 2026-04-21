@@ -25,8 +25,8 @@
     <div class="footer-container">
         <div class="footer-info"><strong>TER<span>VI</span></strong></div>
         <div class="footer-links">
-            <a href="privacidad.html">Privacidad</a>
-            <a href="terminos.html">Términos</a>
+            <a href="privacidad.php">Privacidad</a>
+            <a href="terminos.php">Términos</a>
             <a href="sobre-nosotros.php">Contacto</a>
         </div>
     </div>

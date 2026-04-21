@@ -73,4 +73,5 @@ $query_ejercicios = mysqli_query($conexion, "SELECT * FROM ejercicio ORDER BY ni
         </article>
     <?php endwhile; ?>
 </div>
+</body>
 <?php include 'includes/footer.php'; ?>

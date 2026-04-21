@@ -46,6 +46,57 @@ if (isset($_POST['resolver_duda'])) {
     }
     header("Location: admin.php?sec=chatbot&res=ok");
 }
+// --- LÓGICA DE HISTORIAL Y RECETAS (Actualizada) ---
+if (isset($_POST['guardar_receta'])) {
+    $id_pac = intval($_POST['id_paciente']);
+    $ind = mysqli_real_escape_string($conexion, $_POST['indicaciones']);
+    // Tabla: recetario | Columna: indicacion
+    mysqli_query($conexion, "INSERT INTO recetario (id_usuario, indicacion) VALUES ($id_pac, '$ind')");
+    header("Location: admin.php?sec=gestionar&id=$id_pac&res=ok");
+}
+
+if (isset($_POST['guardar_nota'])) {
+    $id_pac = intval($_POST['id_paciente']);
+    $nota = mysqli_real_escape_string($conexion, $_POST['nota']);
+    // Tabla: historial_clinico | Columna: nota_evolucion
+    mysqli_query($conexion, "INSERT INTO historial_clinico (id_usuario, nota_evolucion) VALUES ($id_pac, '$nota')");
+    header("Location: admin.php?sec=gestionar&id=$id_pac&res=ok");
+}
+
+if (isset($_POST['actualizar_receta'])) {
+    $id_receta = intval($_POST['id_receta']);
+    $id_pac = intval($_POST['id_paciente']);
+    $nueva_ind = mysqli_real_escape_string($conexion, $_POST['indicaciones']);
+    
+    mysqli_query($conexion, "UPDATE recetario SET indicacion = '$nueva_ind' WHERE id_receta = $id_receta");
+    header("Location: admin.php?sec=gestionar&id=$id_pac&res=editado");
+}
+
+if (isset($_POST['guardar_receta_completa'])) {
+    $id_p = intval($_POST['id_paciente']);
+    $fecha = $_POST['fecha_custom'];
+    $doc = mysqli_real_escape_string($conexion, $_POST['medico']);
+    $ind = mysqli_real_escape_string($conexion, $_POST['indicaciones']);
+    
+    $sql = "INSERT INTO recetario (id_usuario, indicacion, nombre_doctor, fecha) 
+            VALUES ($id_p, '$ind', '$doc', '$fecha')";
+    
+    mysqli_query($conexion, $sql);
+    header("Location: admin.php?sec=gestionar&id=$id_p&res=ok");
+}
+if (isset($_POST['actualizar_biometria'])) {
+    $id_p = intval($_POST['id_paciente']);
+    $ed = intval($_POST['n_edad']);
+    $pe = floatval($_POST['n_peso']);
+    $al = intval($_POST['n_altura']);
+    $est = mysqli_real_escape_string($conexion, $_POST['n_estado']); // El nuevo estado
+
+    // Actualizamos todo, incluyendo el estado de salud
+    $sql = "UPDATE usuarios SET edad=$ed, peso=$pe, altura=$al, estado_salud='$est' WHERE id_usuario=$id_p";
+    mysqli_query($conexion, $sql);
+    
+    header("Location: admin.php?sec=gestionar&id=$id_p&res=ok");
+}
 
 // ... después de tu lógica de login ...
 
@@ -156,6 +207,9 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
     <li><a href="admin.php?sec=comentarios" class="<?= $seccion == 'comentarios' ? 'active' : '' ?>">💬 Comentarios</a></li>
     <li><a href="admin.php?sec=ejercicio" class="<?= $seccion == 'ejercicio' ? 'active' : '' ?>">🏋️ Ejercicios</a></li>
     <li><a href="admin.php?sec=chatbot" class="<?= $seccion == 'chatbot' ? 'active' : '' ?>">🤖 Chatbot</a></li>
+    <li><a href="admin.php?sec=pacientes" class="<?= $seccion == 'pacientes' ? 'active' : '' ?>">📋 Expedientes Pacientes</a></li>
+    <li><a href="admin.php?sec=inicio" class="<?= $seccion == 'inicio' ? 'active' : '' ?>">🏠 Inicio</a></li>
+
     <div style="flex-grow: 1;"></div>
     <li style="border-top: 1px solid #eee;">
         <a href="admin.php?logout=true" style="color: #e74c3c; font-weight: bold; background: #fff5f5;" 
@@ -452,6 +506,252 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
                 </div>
             </div>
         <?php endif; ?>
+
+        <style>
+            /* Contenedor de Grid para formularios */
+.gestion-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Tarjetas mejoradas */
+.card-med {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-top: 5px solid #2e86c1; /* Línea decorativa azul */
+}
+
+/* Inputs y Textareas estilo moderno */
+.card-med input, .card-med textarea, .card-med select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dcdde1;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: 0.3s;
+}
+
+.card-med input:focus, .card-med textarea:focus {
+    border-color: #2e86c1;
+    outline: none;
+    box-shadow: 0 0 5px rgba(46, 134, 193, 0.2);
+}
+
+.card-med label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #487eb0;
+}
+
+/* Botones personalizados */
+.btn-med {
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.btn-blue { background: #2e86c1; }
+.btn-blue:hover { background: #21618c; }
+.btn-green { background: #27ae60; }
+.btn-green:hover { background: #1e8449; }
+
+/* Lista de notas */
+.nota-item {
+    border-left: 4px solid #27ae60;
+    background: #f4fdf7;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 0 10px 10px 0;
+    position: relative;
+}
+
+.nota-item small {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.nota-item p {
+    font-size: 14px;
+    color: #2f3640;
+    margin: 5px 0;
+}
+
+/* Tabla de pacientes */
+.table-pacientes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-pacientes th {
+    text-align: left;
+    background: #f5f6fa;
+    padding: 15px;
+    color: #2e86c1;
+}
+
+.table-pacientes td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f2f6;
+}
+        </style>
+   <?php if($seccion == 'pacientes'): ?>
+    <h1>Expedientes de Pacientes</h1>
+    <div class="card">
+        <div class="table-wrapper">
+            <table class="table-pacientes">
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Correo</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $pacs = mysqli_query($conexion, "SELECT * FROM usuarios WHERE rol = 'paciente'");
+                    while($p = mysqli_fetch_assoc($pacs)): 
+                        // --- AQUÍ VA LA LÓGICA DEL COLOR ---
+                        $color = "#27ae60"; // Verde por defecto (excelente)
+                        if($p['estado_salud'] == 'estable') $color = "#f1c40f"; // Amarillo
+                        if($p['estado_salud'] == 'critico') $color = "#e74c3c"; // Rojo
+                    ?>
+                    <tr>
+                        <td>
+                            <span style="height:12px; width:12px; background:<?= $color ?>; border-radius:50%; display:inline-block; margin-right:8px; border: 1px solid rgba(0,0,0,0.1);"></span>
+                            <strong><?= htmlspecialchars($p['nombre']." ".$p['apellido_paterno']) ?></strong>
+                        </td>
+                        <td><?= $p['correo'] ?></td>
+                        <td>
+                            <a href="admin.php?sec=gestionar&id=<?= $p['id_usuario'] ?>" class="btn-med btn-blue" style="text-decoration:none; padding: 8px 15px;">📂 Abrir Expediente</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if($seccion == 'gestionar'): 
+    $id_p = intval($_GET['id']);
+    $res_p = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id_usuario = $id_p");
+    $pac = mysqli_fetch_assoc($res_p);
+?>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>👨‍⚕️ Expediente: <?= htmlspecialchars($pac['nombre']." ".$pac['apellido_paterno']) ?></h1>
+        <a href="admin.php?sec=pacientes" class="btn" style="background:#95a5a6; color:white; text-decoration:none; padding:8px 15px; border-radius:8px;">← Volver</a>
+    </div>
+
+    <div class="card-med" style="margin-bottom: 20px; border-left: 5px solid #3498db;">
+        <h3>📊 Datos Vitales (Actualizar)</h3>
+        <form method="POST" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; align-items: end;">
+            <input type="hidden" name="id_paciente" value="<?= $id_p ?>">
+            <div>
+                <label>Edad</label>
+                <input type="number" name="n_edad" value="<?= $pac['edad'] ?>">
+            </div>
+            <div>
+                <label>Peso (kg)</label>
+                <input type="number" step="0.1" name="n_peso" value="<?= $pac['peso'] ?>">
+            </div>
+            <div>
+                <label>Altura (cm)</label>
+                <input type="number" name="n_altura" value="<?= $pac['altura'] ?>">
+            </div>
+            <div class="form-group-medical">
+    <label>Estado del Paciente</label>
+    <select name="n_estado" style="width:100%; padding:8px; border-radius:8px;">
+        <option value="excelente" <?= $pac['estado_salud'] == 'excelente' ? 'selected' : '' ?>>Verde - Excelente</option>
+        <option value="estable" <?= $pac['estado_salud'] == 'estable' ? 'selected' : '' ?>>Amarillo - Estable</option>
+        <option value="critico" <?= $pac['estado_salud'] == 'critico' ? 'selected' : '' ?>>Rojo - Urgente</option>
+    </select>
+</div>
+            <button type="submit" name="actualizar_biometria" class="btn-med btn-blue">Actualizar Datos</button>
+        </form>
+    </div>
+
+    <div class="gestion-container">
+        
+        <div class="card-med">
+            <h3>💊 Emitir Nueva Receta</h3>
+            <form method="POST">
+                <input type="hidden" name="id_paciente" value="<?= $id_p ?>">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <div>
+                        <label>Fecha de Emisión</label>
+                        <input type="date" name="fecha_custom" value="<?= date('Y-m-d') ?>">
+                    </div>
+                    <div>
+                        <label>Nombre del Médico</label>
+                        <input type="text" name="medico" placeholder="Nombre completo" required>
+                    </div>
+                </div>
+                <label>Indicación / Medicamento</label>
+                <textarea name="indicaciones" placeholder="Escribe aquí las instrucciones..." required style="height: 80px;"></textarea>
+                <button type="submit" name="guardar_receta_completa" class="btn-med btn-blue" style="margin-top: 15px;">+ Generar Receta Oficial</button>
+            </form>
+        </div>
+
+        <div class="card-med" style="border-top-color: #27ae60;">
+            <h3>🩺 Evolución del Historial</h3>
+            <form method="POST">
+                <input type="hidden" name="id_paciente" value="<?= $id_p ?>">
+                <textarea name="nota" placeholder="¿Cómo va el paciente?" required style="height: 100px;"></textarea>
+                <button type="submit" name="guardar_nota" class="btn-med btn-green" style="margin-top: 15px;">Guardar Nota Médica</button>
+            </form>
+
+            <h4 style="margin-top: 25px; color: #27ae60;">Historial Reciente</h4>
+            <div style="max-height: 250px; overflow-y: auto; margin-top: 10px;">
+                <?php
+                $notas = mysqli_query($conexion, "SELECT * FROM historial_clinico WHERE id_usuario = $id_p ORDER BY fecha DESC");
+                while($n = mysqli_fetch_assoc($notas)): ?>
+                    <div class="nota-item">
+                        <small><i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($n['fecha'])) ?></small>
+                        <p><?= nl2br(htmlspecialchars($n['nota_evolucion'])) ?></p>
+                        <a href="admin.php?sec=gestionar&id=<?= $id_p ?>&del_nota=<?= $n['id_historial'] ?>" style="color:#e74c3c; font-size:11px; text-decoration:none;" onclick="return confirm('¿Borrar?')">Eliminar</a>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </div>
+
+    </div>
+<?php endif; ?>
+
+<?php if($seccion == 'inicio'): 
+    // Consultas rápidas
+    $count_p = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM usuarios WHERE rol='paciente'"));
+    $count_r = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM recetario WHERE DATE(fecha) = CURDATE()"));
+?>
+    <h1>Panel General de TERVI</h1>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div class="card-med" style="text-align: center; border-top: 5px solid #3498db;">
+            <i class="fas fa-users" style="font-size: 2rem; color: #3498db;"></i>
+            <h2><?= $count_p['total'] ?></h2>
+            <p>Pacientes Totales</p>
+        </div>
+        <div class="card-med" style="text-align: center; border-top: 5px solid #e67e22;">
+            <i class="fas fa-file-prescription" style="font-size: 2rem; color: #e67e22;"></i>
+            <h2><?= $count_r['total'] ?></h2>
+            <p>Recetas Hoy</p>
+        </div>
+        <div class="card-med" style="text-align: center; border-top: 5px solid #27ae60;">
+            <i class="fas fa-check-circle" style="font-size: 2rem; color: #27ae60;"></i>
+            <p>Sistema Operativo</p>
+            <small>Base de datos: Conectada</small>
+        </div>
+    </div>
+<?php endif; ?>
     </div>
 </body>
 </html>

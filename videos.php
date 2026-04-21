@@ -1,49 +1,34 @@
 <?php 
+session_start(); // Paso 1: ¡Fundamental para saber quién está navegando!
 include 'includes/header.php'; 
 include 'config/conexion.php'; 
 
-// Capturamos el video seleccionado (si no hay, mostramos el último subido)
 $id_video = isset($_GET['v']) ? intval($_GET['v']) : 0;
-
-if ($id_video > 0) {
-    $res = mysqli_query($conexion, "SELECT * FROM videos WHERE id_video = $id_video");
-    $video_actual = mysqli_fetch_assoc($res);
-} else {
-    $res = mysqli_query($conexion, "SELECT * FROM videos ORDER BY id_video DESC LIMIT 1");
-    $video_actual = mysqli_fetch_assoc($res);
-}
+$res = ($id_video > 0) ? 
+    mysqli_query($conexion, "SELECT * FROM videos WHERE id_video = $id_video") : 
+    mysqli_query($conexion, "SELECT * FROM videos ORDER BY id_video DESC LIMIT 1");
+$video_actual = mysqli_fetch_assoc($res);
 ?>
 
 <link rel="stylesheet" href="assets/css/videos.css">
 
 <section class="hero-section">
     <h1>Centro de Videoterapia</h1>
-    <p>Aprende de los expertos con nuestras guías visuales de rehabilitación.</p>
+    <p>Guías visuales de rehabilitación para pacientes de MinndTeen.</p>
 </section>
 
 <div class="container video-layout">
-    
     <main class="video-main">
         <?php if ($video_actual): ?>
             <div class="video-player-container">
-    <?php 
-        // 1. Usamos el nombre real de la columna: url_youtube
-        $url = $video_actual['url_youtube']; 
-        
-        // 2. Convertimos formato normal a Embed
-        $embed = str_replace("watch?v=", "embed/", $url);
-        
-        // 3. ¡Extra! Por si usas links cortos (youtu.be/...)
-        $embed = str_replace("youtu.be/", "www.youtube.com/embed/", $embed);
-
-        // 4. Limpiamos cualquier parámetro extra (como &t=10s o &ab_channel)
-        $posicion_extra = strpos($embed, '&');
-        if ($posicion_extra !== false) {
-            $embed = substr($embed, 0, $posicion_extra);
-        }
-    ?>
-    <iframe width="100%" height="450" src="<?= $embed ?>" frameborder="0" allowfullscreen></iframe>
-</div>
+                <?php 
+                    $url = $video_actual['url_youtube']; 
+                    $embed = str_replace(["watch?v=", "youtu.be/"], ["embed/", "www.youtube.com/embed/"], $url);
+                    $pos = strpos($embed, '&');
+                    if ($pos !== false) $embed = substr($embed, 0, $pos);
+                ?>
+                <iframe width="100%" height="450" src="<?= $embed ?>" frameborder="0" allowfullscreen></iframe>
+            </div>
 
             <div class="video-info">
                 <h2><?= htmlspecialchars($video_actual['titulo_video']) ?></h2>
@@ -53,19 +38,26 @@ if ($id_video > 0) {
             <div class="comments-section">
                 <h3>💬 Comunidad TERVI</h3>
                 
-                <form action="procesos/guardar_comentario.php" method="POST" class="comment-form">
-                    <input type="hidden" name="id_video" value="<?= $video_actual['id_video'] ?>">
-                    <div class="form-group">
-                    <input type="text" name="nombre_usuario" placeholder="Tu nombre o alias..." required 
-               style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #d6eaf8; margin-bottom: 10px;">
-                      </div>
-                    <textarea name="comentario" placeholder="Escribe tu duda o comentario aquí..." required></textarea>
-                    <button type="submit" name="enviar_comentario" class="btn-submit-comment">
-                      <span>Publicar Comentario</span>
-                      <i class="fas fa-paper-plane"></i> <span style="margin-left: 8px;">🚀
-                      </span> 
-                       </button>                
+                <?php if(isset($_SESSION['id_usuario'])): ?>
+                    <form action="procesos/guardar_comentario.php" method="POST" class="comment-form">
+                        <input type="hidden" name="id_video" value="<?= $video_actual['id_video'] ?>">
+                        
+                        <p style="color: var(--azul-tervi); font-weight: bold; margin-bottom: 10px;">
+                            👤 Estás comentando como: <?= $_SESSION['nombre'] ?>
+                        </p>
+
+                        <textarea name="comentario" placeholder="Escribe tu duda aquí..." required></textarea>
+                        <button type="submit" name="enviar_comentario" class="btn-submit-comment">
+                            Publicar Comentario 🚀
+                        </button>                
                     </form>
+                <?php else: ?>
+                    <div style="background: #fdf2e9; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #fae5d3;">
+                        <p>Para dejar una duda o comentario, necesitas una cuenta.</p>
+                        <a href="login.php" style="color: var(--azul-tervi); font-weight: bold; text-decoration: underline;">Iniciar Sesión</a> o 
+                        <a href="registro.php" style="color: var(--azul-tervi); font-weight: bold; text-decoration: underline;">Registrarse</a>
+                    </div>
+                <?php endif; ?>
 
                 <div class="comments-list">
                     <?php 
@@ -74,39 +66,18 @@ if ($id_video > 0) {
                     while($c = mysqli_fetch_assoc($coms)): 
                     ?>
                         <div class="comment-card">
-                        <h4 style="margin: 0 0 5px 0; color: var(--azul-oscuro); font-size: 0.9rem;">
-                         👤 <?= htmlspecialchars($c['nombre_usuario']) ?> dice:</h4>
-                         <p><?= htmlspecialchars($c['comentario']) ?></p>
-                         <small>📅 <?= date('d/m/Y', strtotime($c['fecha'])) ?></small>
+                            <h4 style="margin:0; color:var(--azul-tervi);">👤 <?= htmlspecialchars($c['nombre_usuario']) ?></h4>
+                            <p><?= htmlspecialchars($c['comentario']) ?></p>
+                            <small>📅 <?= date('d/m/Y', strtotime($c['fecha'])) ?></small>
                         </div>
                     <?php endwhile; ?>
                 </div>
             </div>
-        <?php else: ?>
-            <p>Aún no hay videos disponibles.</p>
         <?php endif; ?>
     </main>
 
     <aside class="video-sidebar">
-        <h3>📹 Más Videos</h3>
-        <div class="playlist">
-            <?php 
-            $lista = mysqli_query($conexion, "SELECT * FROM videos ORDER BY id_video DESC");
-            while($lv = mysqli_fetch_assoc($lista)): 
-            ?>
-                <a href="videos.php?v=<?= $lv['id_video'] ?>" class="playlist-item <?= $id_video == $lv['id_video'] ? 'active' : '' ?>">
-                    <div class="thumb-mini">▶</div>
-                    <div class="info-mini">
-                        <h4><?= htmlspecialchars($lv['titulo_video']) ?></h4>
-                        <small><?= $lv['duracion_minutos'] ?> min</small>
-                    </div>
-                </a>
-            <?php endwhile; ?>
-        </div>
-    </aside>
-
+        </aside>
 </div>
 
 <?php include 'includes/footer.php'; ?>
-</body>
-</html>

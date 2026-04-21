@@ -1,9 +1,17 @@
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Asegúrate de tener la conexión a la BD disponible aquí
+include_once 'config/conexion.php'; 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>TERVI</title>
-   <link rel="stylesheet" href="/assets/css/estilos.css">
+    <link rel="stylesheet" href="/assets/css/estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -24,20 +32,59 @@
 
             <nav class="menu" id="nav-menu">
                 <ul>
-                    <li><a href="/conceptos.php">Conceptos <i class="arrow down"></i></a></li>
-                    <li><a href="/videos.php">Recursos <i class="arrow down"></i></a></li>
-                    <li><a href="/ejercicio.php">Ejercicios <i class="arrow down"></i></a></li>
-                    <li><a href="/sobre_nosotros.php">Acerca de <i class="arrow down"></i></a></li>
+                    <li><a href="/conceptos.php">Conceptos</a></li>
+                    <li><a href="/videos.php">Recursos</a></li>
+                    <li><a href="/ejercicio.php">Ejercicios</a></li>
+                    <li><a href="/sobre_nosotros.php">Acerca de</a></li>
+
+                    <?php if(isset($_SESSION['id_usuario'])): 
+                        // Lógica de notificaciones
+                        $id_u = $_SESSION['id_usuario'];
+                        $notif = mysqli_query($conexion, "SELECT COUNT(*) as nuevas FROM recetario WHERE id_usuario = $id_u AND visto = 0");
+                        $n = mysqli_fetch_assoc($notif);
+                    ?>
+                        <li class="nav-especial">
+                            <a href="#" class="perfil-usuario">
+                                <i class="fas fa-user-circle"></i> MI SALUD
+                                <?php if($n['nuevas'] > 0): ?>
+                                    <span style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px; margin-left: 5px;">
+                                        <?= $n['nuevas'] ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="sub-menu-salud">
+                                <li><a href="historial_clinico.php"><i class="fas fa-file-medical"></i> HISTORIAL</a></li>
+                                <li><a href="recetario.php"><i class="fas fa-pills"></i> RECETARIO</a></li>
+                                <li><a href="procesos/logout.php" class="link-salir"><i class="fas fa-sign-out-alt"></i> SALIR</a></li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <li><a href="login.php" class="btn-login">Ingresar</a></li>
+                    <?php endif; ?>
+
+                    <li class="buy-item">
+                        <a href="checkout.php" class="btn-buy">Adquirir Software 💎</a>
+                    </li>
                 </ul>
             </nav>
         </div> 
     </header>
-    <script>
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menu = document.querySelector('.menu');
 
-    menuToggle.addEventListener('click', () => {
-        menu.classList.toggle('active');
+<script>
+const navEspecial = document.querySelector('.nav-especial');
+const btnSalud = document.querySelector('.perfil-usuario');
+const subMenu = document.querySelector('.sub-menu-salud');
+
+if (btnSalud && subMenu) {
+    btnSalud.addEventListener('click', (e) => {
+        e.preventDefault();
+        subMenu.classList.toggle('mostrar-menu');
     });
+
+    document.addEventListener('click', (e) => {
+        if (!navEspecial.contains(e.target)) {
+            subMenu.classList.remove('mostrar-menu');
+        }
+    });
+}
 </script>
-    </body>
