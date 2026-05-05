@@ -1,5 +1,5 @@
 <?php
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 if (isset($_POST['actualizar_video'])) {
     $id = intval($_POST['id_video']);

@@ -1,5 +1,5 @@
 <?php
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 if (isset($_POST['guardar_ejercicio'])) {
     // 1. Recolección de datos y limpieza
@@ -30,7 +30,7 @@ if (isset($_POST['guardar_ejercicio'])) {
         // --- LÓGICA DE ACTUALIZACIÓN ---
         $extra_img = ($nombre_imagen != "") ? ", imagen_guia='$nombre_imagen'" : "";
         
-        $query = "UPDATE ejercicio SET 
+        $query = "UPDATE series_ejercicio SET 
                   nombre='$nombre', 
                   descripcion='$descripcion', 
                   series=$series, 

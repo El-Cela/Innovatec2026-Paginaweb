@@ -1,42 +1,34 @@
 <?php
 session_start();
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
+// LÍNEA VITAL:
+mysqli_set_charset($conexion, "utf8mb4");
 
 if (isset($_POST['entrar'])) {
-    // 1. Limpiamos los datos recibidos
-    $correo = mysqli_real_escape_string($conexion, $_POST['correo']);
-    $password = $_POST['pass']; // Contraseña tal cual la escribió el usuario
+    // Usamos trim para evitar espacios accidentales en el correo
+    $correo = mysqli_real_escape_string($conexion, trim($_POST['correo_usu']));
+    $password = $_POST['contraseña_usu'];
 
-    // 2. Buscamos al usuario en la tabla (asumiendo que tu columna se llama 'correo')
-    $query = "SELECT * FROM usuarios WHERE correo = '$correo'";
+    $query = "SELECT * FROM usuarios WHERE correo_usu = '$correo'";
     $resultado = mysqli_query($conexion, $query);
 
     if ($usuario = mysqli_fetch_assoc($resultado)) {
-        
-        // 3. Verificamos la contraseña usando el hash que guardamos en el registro
-        if (password_verify($password, $usuario['password'])) {
+        // password_verify ahora funcionará porque el registro ya guardará hashes
+        if (password_verify($password, $usuario['contraseña_usu'])) {
             
-            // ¡ÉXITO! Creamos la sesión
             $_SESSION['id_usuario'] = $usuario['id_usuario'];
-            $_SESSION['nombre'] = $usuario['nombre'];
-            $_SESSION['rol'] = $usuario['rol'];
+            $_SESSION['nombre_usu'] = $usuario['nombre_usu'];
+            // Si no tienes la columna rol aún, esto evita errores:
+            $_SESSION['rol'] = isset($usuario['rol']) ? $usuario['rol'] : 'paciente';
 
-            // 4. Redireccionamos a la página principal
             header("Location: ../index.php");
             exit();
-
         } else {
-            // Contraseña incorrecta
             header("Location: ../login.php?error=pass_incorrecta");
             exit();
         }
     } else {
-        // Correo no encontrado
         header("Location: ../login.php?error=usuario_no_existe");
         exit();
     }
-} else {
-    // Si intentan entrar al archivo sin usar el formulario
-    header("Location: ../login.php");
-    exit();
 }

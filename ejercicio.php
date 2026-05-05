@@ -1,9 +1,9 @@
 <?php 
 include 'includes/header.php'; 
 include 'config/conexion.php'; 
-
+include 'includes/funciones.php';
 // Traemos todos los ejercicios de la tabla correcta
-$query_ejercicios = mysqli_query($conexion, "SELECT * FROM ejercicio ORDER BY nivel_dificultad DESC");
+$query_ejercicios = mysqli_query($conexion, "SELECT * FROM series_ejercicio ORDER BY nivel_dificultad DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,5 +73,6 @@ $query_ejercicios = mysqli_query($conexion, "SELECT * FROM ejercicio ORDER BY ni
         </article>
     <?php endwhile; ?>
 </div>
-</body>
 <?php include 'includes/footer.php'; ?>
+</body>
+</html>

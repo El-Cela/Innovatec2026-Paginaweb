@@ -24,28 +24,6 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// --- LÓGICA DEL CHATBOT ---
-// 1. Borrar una duda pendiente
-if (isset($_GET['del_duda'])) {
-    $id = intval($_GET['del_duda']);
-    mysqli_query($conexion, "DELETE FROM dudas_pendientes WHERE id = $id");
-    header("Location: admin.php?sec=chatbot");
-}
-
-// 2. Convertir duda en respuesta oficial
-if (isset($_POST['resolver_duda'])) {
-    $pregunta = mysqli_real_escape_string($conexion, $_POST['pregunta']);
-    $respuesta = mysqli_real_escape_string($conexion, $_POST['respuesta']);
-    $id_duda = intval($_POST['id_duda']);
-
-    // Insertamos en la tabla de conocimiento del bot
-    $ins = "INSERT INTO chatbot (pregunta, respuesta) VALUES ('$pregunta', '$respuesta')";
-    if (mysqli_query($conexion, $ins)) {
-        // Si se guarda, borramos la duda de la lista de pendientes
-        mysqli_query($conexion, "DELETE FROM dudas_pendientes WHERE id = $id_duda");
-    }
-    header("Location: admin.php?sec=chatbot&res=ok");
-}
 // --- LÓGICA DE HISTORIAL Y RECETAS (Actualizada) ---
 if (isset($_POST['guardar_receta'])) {
     $id_pac = intval($_POST['id_paciente']);
@@ -206,7 +184,6 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
     <li><a href="admin.php?sec=conceptos" class="<?= $seccion == 'conceptos' ? 'active' : '' ?>">🧠 Diccionario / Temas</a></li>
     <li><a href="admin.php?sec=comentarios" class="<?= $seccion == 'comentarios' ? 'active' : '' ?>">💬 Comentarios</a></li>
     <li><a href="admin.php?sec=ejercicio" class="<?= $seccion == 'ejercicio' ? 'active' : '' ?>">🏋️ Ejercicios</a></li>
-    <li><a href="admin.php?sec=chatbot" class="<?= $seccion == 'chatbot' ? 'active' : '' ?>">🤖 Chatbot</a></li>
     <li><a href="admin.php?sec=pacientes" class="<?= $seccion == 'pacientes' ? 'active' : '' ?>">📋 Expedientes Pacientes</a></li>
     <li><a href="admin.php?sec=inicio" class="<?= $seccion == 'inicio' ? 'active' : '' ?>">🏠 Inicio</a></li>
 
@@ -382,79 +359,6 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
                 </div>
             </div>
         <?php endif; ?>
-        
-        <?php if($seccion == 'chatbot'): ?>
-    <h1>Entrenamiento de TERVI</h1>
-    
-    <div class="card">
-        <h2>🧐 Dudas de Usuarios (Sin Respuesta)</h2>
-        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
-            Estas son las preguntas que los usuarios hicieron y el bot no supo contestar. 
-            ¡Enséñale la respuesta correcta!
-        </p>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pregunta del Usuario</th>
-                        <th>Fecha</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $dudas = mysqli_query($conexion, "SELECT * FROM dudas_pendientes ORDER BY fecha DESC");
-                    if(mysqli_num_rows($dudas) == 0) echo "<tr><td colspan='3'>No hay dudas pendientes. ¡TERVI va por buen camino!</td></tr>";
-                    while($d = mysqli_fetch_assoc($dudas)):
-                    ?>
-                    <tr>
-                        <td><strong><?= $d['pregunta_usuario'] ?></strong></td>
-                        <td><?= date('d/m/Y H:i', strtotime($d['fecha'])) ?></td>
-                        <td>
-                            <form method="POST" style="display: flex; gap: 5px;">
-                                <input type="hidden" name="id_duda" value="<?= $d['id'] ?>">
-                                <input type="hidden" name="pregunta" value="<?= $d['pregunta_usuario'] ?>">
-                                <input type="text" name="respuesta" placeholder="Escribe la respuesta médica aquí..." required style="margin-bottom:0; padding: 5px;">
-                                <button type="submit" name="resolver_duda" class="btn btn-approve">Enseñar</button>
-                                <a href="admin.php?del_duda=<?= $d['id'] ?>" class="btn btn-delete" onclick="return confirm('¿Ignorar esta duda?')">🗑️</a>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>🧠 Memoria Actual (Base de Conocimientos)</h2>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Palabra Clave / Pregunta</th>
-                        <th>Respuesta que da TERVI</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $memoria = mysqli_query($conexion, "SELECT * FROM chatbot ORDER BY pregunta ASC");
-                    while($m = mysqli_fetch_assoc($memoria)):
-                    ?>
-                    <tr>
-                        <td style="color: var(--azul-oscuro); font-weight: bold;"><?= $m['pregunta'] ?></td>
-                        <td style="font-style: italic; color: #555;"><?= substr($m['respuesta'], 0, 100) ?>...</td>
-                        <td>
-                            <a href="admin.php?sec=chatbot&del_memoria=<?= $m['id'] ?>" class="btn btn-delete">Eliminar</a>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-<?php endif; ?>
 
 <?php if($seccion == 'ejercicio'): ?>
             <h1>🦾 Gimnasia Terapéutica</h1>

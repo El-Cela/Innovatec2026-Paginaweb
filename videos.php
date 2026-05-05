@@ -43,7 +43,7 @@ $video_actual = mysqli_fetch_assoc($res);
                         <input type="hidden" name="id_video" value="<?= $video_actual['id_video'] ?>">
                         
                         <p style="color: var(--azul-tervi); font-weight: bold; margin-bottom: 10px;">
-                            👤 Estás comentando como: <?= $_SESSION['nombre'] ?>
+                            👤 Estás comentando como: <?= $_SESSION['nombre_usu'] ?>
                         </p>
 
                         <textarea name="comentario" placeholder="Escribe tu duda aquí..." required></textarea>

@@ -1,5 +1,5 @@
 <?php
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 if (isset($_POST['nuevo_video'])) {
     $titulo = mysqli_real_escape_string($conexion, $_POST['titulo']);

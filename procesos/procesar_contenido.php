@@ -1,6 +1,6 @@
 <?php
 // 1. SALIMOS de la carpeta procesos para encontrar la conexión
-include '../config/conexion.php'; 
+require_once __DIR__ . '/../config/conexion.php';
 
 // 2. El nombre en el isset debe ser el NAME del botón, NO la ruta del archivo
 if (isset($_POST['procesar_contenido'])) {

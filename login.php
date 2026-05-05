@@ -14,8 +14,8 @@
     <div class="login-box">
         <h2>💙 Bienvenido</h2>
         <form action="procesos/procesar_login.php" method="POST">
-            <input type="email" name="correo" placeholder="Correo electrónico" required>
-            <input type="password" name="pass" placeholder="Contraseña" required>
+            <input type="email" name="correo_usu" placeholder="Correo electrónico" required>
+            <input type="password" name="contraseña_usu" placeholder="Contraseña" required>
             <button type="submit" name="entrar">Ingresar</button>
         </form>
         <p>¿No eres miembro? <a href="registro.php">Regístrate</a></p>

@@ -18,31 +18,31 @@
             <div class="form-grid">
                 <div class="full-width">
                     <label>Nombre</label>
-                    <input type="text" name="nombre" required>
+                    <input type="text" name="nombre_usu" required>
                 </div>
                 <div>
                     <label>Apellido Paterno</label>
-                    <input type="text" name="apellido_paterno" required>
+                    <input type="text" name="apellidoP_usu" required>
                 </div>
                 <div>
                     <label>Apellido Materno</label>
-                    <input type="text" name="apellido_materno" required>
+                    <input type="text" name="apellidoM_usu" required>
                 </div>
                 <div class="full-width">
                     <label>Correo Electrónico</label>
-                    <input type="email" name="correo" required>
+                    <input type="email_usu" name="correo_usu" required>
                 </div>
                 <div class="full-width">
                     <label>Contraseña</label>
-                    <input type="password" name="pass" required>
+                    <input type="password" name="contraseña_usu" required>
                 </div>
                 <div>
                     <label>Edad</label>
-                    <input type="number" name="edad" required>
+                    <input type="number" name="edad_usu" required>
                 </div>
                 <div>
                     <label>Sexo</label>
-                    <select name="sexo">
+                    <select name="sexo_usu">
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
                         <option value="Otro">Otro</option>
@@ -50,11 +50,11 @@
                 </div>
                 <div>
                     <label>Peso (kg)</label>
-                    <input type="number" step="0.1" name="peso" required>
+                    <input type="number" step="0.1" name="peso_usu" required>
                 </div>
                 <div>
                     <label>Altura (cm)</label>
-                    <input type="number" name="altura" required>
+                    <input type="number" name="altura_usu" required>
                 </div>
             </div>
             <div style="margin: 15px 0; text-align: left; font-size: 14px;">

@@ -1,5 +1,7 @@
 <?php 
-// 1. Lógica de carga de datos (Se activa si Mercedes pulsa el botón de editar ✏️)
+session_start();
+$conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion2");
+// 1. Lógica de carga de datos 
 $datos_ejercicio = [
     'nombre' => '', 
     'descripcion' => '', 
@@ -17,7 +19,7 @@ $color_alerta = "#5dade2"; // Azul por defecto
 
 if (isset($_GET['edit'])) {
     $id_ejercicio_form = intval($_GET['edit']);
-    $res_edicion = mysqli_query($conexion, "SELECT * FROM ejercicio WHERE id_ejercicio = $id_ejercicio_form");
+    $res_edicion = mysqli_query($conexion, "SELECT * FROM series_ejercicio WHERE id_ejercicio = $id_ejercicio_form");
     if ($res_edicion && mysqli_num_rows($res_edicion) > 0) {
         $datos_ejercicio = mysqli_fetch_assoc($res_edicion);
         $texto_boton = "📝 Actualizar Ejercicio";

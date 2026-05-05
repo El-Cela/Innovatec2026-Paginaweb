@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // Verificamos que venga del formulario Y que el usuario esté logueado
 if (isset($_POST['enviar_comentario']) && isset($_SESSION['id_usuario'])) {
