@@ -1,7 +1,11 @@
 <?php 
 session_start(); // Paso 1: Iniciar el motor de sesiones
-$conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion");
+$conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion2");
 
+if (!isset($_SESSION['admin_auth']) || $_SESSION['rol'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
 // --- LÓGICA DE LOGIN ---
 if (isset($_POST['login'])) {
     $usuario = mysqli_real_escape_string($conexion, $_POST['user']);
@@ -138,10 +142,15 @@ if (isset($_GET['borrar_video'])) {
 }
 
 if (isset($_GET['del_ejercicio'])) {
-    $id = intval($_GET['del_ejercicio']);
-    mysqli_query($conexion, "DELETE FROM ejercicio WHERE id_ejercicio = $id");
-    header("Location: admin.php?sec=ejercicio");
-    exit();
+    $id_a_borrar = intval($_GET['del_ejercicio']); 
+    
+    if($id_a_borrar > 0) {
+        // EL WHERE ES VITAL. Sin esto, borras todo.
+        $sql_borrar = "DELETE FROM series_ejercicio WHERE id_ejercicio = $id_a_borrar";
+        mysqli_query($conexion, $sql_borrar);
+        header("Location: admin.php?sec=ejercicio&status=deleted");
+        exit();
+    }
 }
 
 if (isset($_GET['del_contenido'])) {
@@ -361,55 +370,80 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
         <?php endif; ?>
 
 <?php if($seccion == 'ejercicio'): ?>
-            <h1>🦾 Gimnasia Terapéutica</h1>
-            
-            <div class="card">
-                <?php include 'formulario_ejercicio.php'; ?>
-            </div>
+    <h1>🦾 Gimnasia Terapéutico</h1>
+    
+    <div class="card" id="form-section">
+        <?php include 'formulario_ejercicio.php'; ?>
+    </div>
 
-            <div class="card">
-                <h2>📋 Ejercicios Publicados</h2>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ejercicio</th>
-                                <th>Dificultad</th>
-                                <th>Esquema (S x R)</th>
-                                <th>Frecuencia</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $lista = mysqli_query($conexion, "SELECT * FROM ejercicio ORDER BY id_ejercicio DESC");
-                            if(mysqli_num_rows($lista) == 0) echo "<tr><td colspan='5' style='text-align:center;'>No hay ejercicios registrados aún.</td></tr>";
-                            while($row = mysqli_fetch_assoc($lista)): 
-                                // Color para el badge de dificultad
-                                $badge_color = "#27ae60"; // Verde principiante
-                                if($row['nivel_dificultad'] == 'Intermedio') $badge_color = "#f39c12"; // Naranja
-                                if($row['nivel_dificultad'] == 'Avanzado') $badge_color = "#e74c3c"; // Rojo
-                            ?>
-                            <tr>
-                                <td><strong><?= htmlspecialchars($row['nombre']) ?></strong></td>
-                                <td>
-                                    <span style="background: <?= $badge_color ?>; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">
-                                        <?= $row['nivel_dificultad'] ?>
-                                    </span>
-                                </td>
-                                <td><?= $row['series'] ?> sets x <?= $row['repeticiones'] ?> reps</td>
-                                <td><?= htmlspecialchars($row['frecuencia']) ?></td>
-                                <td>
-                                    <a href="admin.php?sec=ejercicio&edit=<?= $row['id_ejercicio'] ?>#form-section" class="btn btn-edit">✏️</a>
-                                    <a href="admin.php?del_ejercicio=<?= $row['id_ejercicio'] ?>" class="btn btn-delete" onclick="return confirm('¿Eliminar este ejercicio?')">🗑️</a>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        <?php endif; ?>
+    <div class="card">
+        <h2>📋 Catálogo de Especialidades</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ejercicio</th>
+                        <th>Especialidad</th> <th>Dificultad</th>
+                        <th>Esquema (S x R)</th>
+                        <th>Frecuencia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    // Unimos series_ejercicio con la tabla categoria para traer el nombre real
+                    $sql = "SELECT e.*, c.nombre AS nombre_categoria 
+                            FROM series_ejercicio e 
+                            LEFT JOIN categorias c ON e.id_categoria = c.id_categoria 
+                            ORDER BY c.nombre ASC, e.id_ejercicio DESC";
+                    
+                    $lista = mysqli_query($conexion, $sql);
+
+                    // Verificación de seguridad para evitar el Fatal Error
+                    if(!$lista) {
+                        echo "<tr><td colspan='6' style='color:red;'>Error en la consulta: " . mysqli_error($conexion) . "</td></tr>";
+                    } else if(mysqli_num_rows($lista) == 0) {
+                        echo "<tr><td colspan='6' style='text-align:center;'>No hay ejercicios registrados aún.</td></tr>";
+                    } else {
+                        while($row = mysqli_fetch_assoc($lista)): 
+                            // Semáforo de dificultad TERVI
+                            $badge_color = "#27ae60"; // Bajo
+                            if($row['nivel_dificultad'] == 'Medio') $badge_color = "#f39c12"; 
+                            if($row['nivel_dificultad'] == 'Alto') $badge_color = "#e74c3c"; 
+                        ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($row['nombre']) ?></strong></td>
+                            
+                            <td>
+                                <span style="color: #2e86c1; font-size: 12px; font-weight: bold; background: #eef7ff; padding: 3px 8px; border-radius: 5px;">
+                                    <?= htmlspecialchars($row['nombre_categoria'] ?? 'Sin Categoría') ?>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span style="background: <?= $badge_color ?>; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                    <?= htmlspecialchars($row['nivel_dificultad']) ?>
+                                </span>
+                            </td>
+                            
+                            <td><?= $row['series'] ?> sets x <?= $row['repeticiones'] ?> reps</td>
+                            
+                            <td><?= htmlspecialchars($row['frecuencia']) ?></td>
+                            
+                            <td>
+                                <a href="admin.php?sec=ejercicio&edit=<?= $row['id_ejercicio'] ?>#form-section" class="btn btn-edit" title="Editar">✏️</a>
+                                <a href="admin.php?del_ejercicio=<?= $row['id_ejercicio'] ?>" class="btn btn-delete" onclick="return confirm('¿Eliminar este protocolo?')" title="Eliminar">🗑️</a>
+                            </td>
+                        </tr>
+                        <?php 
+                        endwhile; 
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php endif; ?>
 
         <style>
             /* Contenedor de Grid para formularios */
@@ -509,7 +543,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
     border-bottom: 1px solid #f1f2f6;
 }
         </style>
-   <?php if($seccion == 'pacientes'): ?>
+ <?php if($seccion == 'pacientes'): ?>
     <h1>Expedientes de Pacientes</h1>
     <div class="card">
         <div class="table-wrapper">
@@ -517,25 +551,37 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
                 <thead>
                     <tr>
                         <th>Nombre Completo</th>
-                        <th>Correo</th>
+                        <th>Correo Electrónico</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $pacs = mysqli_query($conexion, "SELECT * FROM usuarios WHERE rol = 'paciente'");
-                    while($p = mysqli_fetch_assoc($pacs)): 
-                        // --- AQUÍ VA LA LÓGICA DEL COLOR ---
-                        $color = "#27ae60"; // Verde por defecto (excelente)
-                        if($p['estado_salud'] == 'estable') $color = "#f1c40f"; // Amarillo
-                        if($p['estado_salud'] == 'critico') $color = "#e74c3c"; // Rojo
+                    $query = "SELECT * FROM usuarios ORDER BY nombre_usu ASC";
+                    $pacs = mysqli_query($conexion, $query);
+                    
+                    if (!$pacs) {
+                        die("<div class='error'>Error al cargar pacientes: " . mysqli_error($conexion) . "</div>");
+                    }
+
+                    if(mysqli_num_rows($pacs) == 0) {
+                        echo "<tr><td colspan='3' style='text-align:center; padding:20px;'>No hay pacientes registrados aún.</td></tr>";
+                    }
+
+                    while($p = mysqli_fetch_assoc($pacs)):
+                        // Lógica de semáforo de salud (Medicina de Precisión)
+                        $color = "#27ae60"; // Verde (Excelente)
+                        if(isset($p['estado_salud'])){
+                            if($p['estado_salud'] == 'estable') $color = "#f1c40f"; // Amarillo
+                            if($p['estado_salud'] == 'critico') $color = "#e74c3c"; // Rojo
+                        }
                     ?>
                     <tr>
                         <td>
                             <span style="height:12px; width:12px; background:<?= $color ?>; border-radius:50%; display:inline-block; margin-right:8px; border: 1px solid rgba(0,0,0,0.1);"></span>
-                            <strong><?= htmlspecialchars($p['nombre']." ".$p['apellido_paterno']) ?></strong>
+                            <strong><?= htmlspecialchars($p['nombre_usu']." ".$p['apellidoP_usu']) ?></strong>
                         </td>
-                        <td><?= $p['correo'] ?></td>
+                        <td><?= htmlspecialchars($p['correo_usu']) ?></td>
                         <td>
                             <a href="admin.php?sec=gestionar&id=<?= $p['id_usuario'] ?>" class="btn-med btn-blue" style="text-decoration:none; padding: 8px 15px;">📂 Abrir Expediente</a>
                         </td>
@@ -553,7 +599,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
     $pac = mysqli_fetch_assoc($res_p);
 ?>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1>👨‍⚕️ Expediente: <?= htmlspecialchars($pac['nombre']." ".$pac['apellido_paterno']) ?></h1>
+        <h1>👨‍⚕️ Expediente: <?= htmlspecialchars($pac['nombre_usu']." ".$pac['apellidoP_usu']) ?></h1>
         <a href="admin.php?sec=pacientes" class="btn" style="background:#95a5a6; color:white; text-decoration:none; padding:8px 15px; border-radius:8px;">← Volver</a>
     </div>
 
@@ -563,15 +609,15 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
             <input type="hidden" name="id_paciente" value="<?= $id_p ?>">
             <div>
                 <label>Edad</label>
-                <input type="number" name="n_edad" value="<?= $pac['edad'] ?>">
+                <input type="number" name="n_edad" value="<?= $pac['edad_usu'] ?>">
             </div>
             <div>
                 <label>Peso (kg)</label>
-                <input type="number" step="0.1" name="n_peso" value="<?= $pac['peso'] ?>">
+                <input type="number" step="0.1" name="n_peso" value="<?= $pac['peso_usu'] ?>">
             </div>
             <div>
                 <label>Altura (cm)</label>
-                <input type="number" name="n_altura" value="<?= $pac['altura'] ?>">
+                <input type="number" name="n_altura" value="<?= $pac['altura_usu'] ?>">
             </div>
             <div class="form-group-medical">
     <label>Estado del Paciente</label>
@@ -634,7 +680,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
 
 <?php if($seccion == 'inicio'): 
     // Consultas rápidas
-    $count_p = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM usuarios WHERE rol='paciente'"));
+    $count_p = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM usuarios"));
     $count_r = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM recetario WHERE DATE(fecha) = CURDATE()"));
 ?>
     <h1>Panel General de TERVI</h1>

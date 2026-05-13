@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/conexion.php';
 mysqli_set_charset($conexion, "utf8mb4");
-// Al principio de tu archivo de proceso:
+
 if (!isset($_POST['acepto_terminos'])) {
     header("Location: ../registro.php?error=debes_aceptar_terminos");
     exit();
@@ -30,11 +30,11 @@ if (isset($_POST['registrar'])) {
         exit();
     }
 
-    // 4. Insertamos en la base de datos
-    // Por defecto el rol es 'paciente'
-    // ... (código anterior igual)
 
-// 4. Insertamos en la base de datos
+// Forzamos que cualquier registro que venga de la web sea ROL PACIENTE
+$query = "INSERT INTO usuarios (nombre_usu, apellidoP_usu, ..., rol) 
+          VALUES ('$nombre', '$apellido_p', ..., 'paciente')";
+
 // AGREGAMOS 'usuario_usu' al final de la lista de columnas y valores
 $sql = "INSERT INTO usuarios (nombre_usu, apellidoP_usu, apellidoM_usu, correo_usu, contraseña_usu, edad_usu, sexo_usu, peso_usu, altura_usu, usuario_usu) 
         VALUES ('$nombre', '$apellido_p', '$apellido_m', '$correo', '$pass_hash', $edad, '$sexo', $peso, $altura, '$correo')";

@@ -55,6 +55,7 @@ include_once 'config/conexion.php';
                             <ul class="sub-menu-salud">
                                 <li><a href="historial_clinico.php"><i class="fas fa-file-medical"></i> HISTORIAL</a></li>
                                 <li><a href="recetario.php"><i class="fas fa-pills"></i> RECETARIO</a></li>
+                                <li><a href="puntuacion.php"><i class="fas fa-star"></i> PUNTUACIONES</a></li>
                                 <li><a href="procesos/logout.php" class="link-salir"><i class="fas fa-sign-out-alt"></i> SALIR</a></li>
                             </ul>
                         </li>

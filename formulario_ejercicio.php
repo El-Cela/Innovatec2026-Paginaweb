@@ -1,5 +1,4 @@
 <?php 
-session_start();
 $conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion2");
 // 1. Lógica de carga de datos 
 $datos_ejercicio = [
@@ -14,7 +13,7 @@ $datos_ejercicio = [
 ];
 
 $id_ejercicio_form = 0;
-$texto_boton = "🚀 Guardar Ejercicio";
+$texto_boton = "Guardar Ejercicio";
 $color_alerta = "#5dade2"; // Azul por defecto
 
 if (isset($_GET['edit'])) {
@@ -22,7 +21,7 @@ if (isset($_GET['edit'])) {
     $res_edicion = mysqli_query($conexion, "SELECT * FROM series_ejercicio WHERE id_ejercicio = $id_ejercicio_form");
     if ($res_edicion && mysqli_num_rows($res_edicion) > 0) {
         $datos_ejercicio = mysqli_fetch_assoc($res_edicion);
-        $texto_boton = "📝 Actualizar Ejercicio";
+        $texto_boton = "Actualizar Ejercicio";
         $color_alerta = "#f39c12"; // Naranja para indicar edición
     }
 }
@@ -96,7 +95,7 @@ if (isset($_GET['edit'])) {
 
 <div class="card" id="form-section">
     <h2 style="margin-top:0; color: #2e86c1; font-size: 1.4rem;">
-        <?= isset($_GET['edit']) ? '✏️ Editando Ejercicio' : '✨ Nuevo Ejercicio Terapéutico' ?>
+        <?= isset($_GET['edit']) ? 'Editando Ejercicio' : '✨ Nuevo Ejercicio Terapéutico' ?>
     </h2>
     <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 25px;">
         Completa los campos para actualizar el gimnasio virtual de <strong>MinndTeen</strong>.
@@ -134,18 +133,40 @@ if (isset($_GET['edit'])) {
             <input type="number" name="repeticiones" value="<?= $datos_ejercicio['repeticiones'] ?>" min="1">
         </div>
 
+<div class="form-group-ej">
+    <label>Especialidad Clínica (Categoría)</label>
+    <select name="id_categoria" class="form-control" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+        <option value="">-- Selecciona Especialidad --</option>
+        <?php 
+        // Traemos las categorías directamente de la base de datos de TERVI
+        $res_cats = mysqli_query($conexion, "SELECT * FROM categorias ORDER BY nombre ASC");
+        
+        while($cat = mysqli_fetch_assoc($res_cats)): 
+            // Comparamos los IDs numéricos para mantener la selección al editar
+            $selected = ($datos_ejercicio['id_categoria'] == $cat['id_categoria']) ? 'selected' : '';
+        ?>
+            <option value="<?= $cat['id_categoria'] ?>" <?= $selected ?>>
+                <?= htmlspecialchars($cat['nombre']) ?>
+            </option>
+        <?php endwhile; ?>
+    </select>
+    <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+        Selecciona el nicho terapéutico según el diagnóstico del paciente.
+    </small>
+</div>
+
         <div class="form-group-ej full-width">
-            <label>📖 Descripción Técnica (Paso a paso)</label>
+            <label>Descripción Técnica (Paso a paso)</label>
             <textarea name="descripcion" rows="4" required placeholder="Explica cómo realizar el movimiento..."><?= htmlspecialchars($datos_ejercicio['descripcion']) ?></textarea>
         </div>
 
         <div class="form-group-ej full-width">
-            <label>⚠️ Precauciones y Contraindicaciones</label>
+            <label>Precauciones y Contraindicaciones</label>
             <textarea name="precauciones" rows="2" class="precaucion-input" placeholder="Ej: Evitar si existe dolor agudo en la zona lumbar..."><?= htmlspecialchars($datos_ejercicio['precauciones']) ?></textarea>
         </div>
 
         <div class="form-group-ej full-width">
-            <label>📸 Imagen de Referencia</label>
+            <label>Imagen de Referencia</label>
             <input type="file" name="imagen_guia" accept="image/*">
             <small style="color: #95a5a6;">Formatos recomendados: JPG o PNG. Tamaño máximo 2MB.</small>
         </div>

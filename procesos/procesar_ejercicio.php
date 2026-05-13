@@ -11,6 +11,9 @@ if (isset($_POST['guardar_ejercicio'])) {
     $frecuencia = mysqli_real_escape_string($conexion, $_POST['frecuencia']);
     $nivel_dificultad = mysqli_real_escape_string($conexion, $_POST['nivel_dificultad']);
     $precauciones = mysqli_real_escape_string($conexion, $_POST['precauciones']);
+    
+    // --- IMPORTANTE: Capturamos el ID de la categoría que viene del select ---
+    $id_categoria = isset($_POST['id_categoria']) ? intval($_POST['id_categoria']) : 1;
 
     // 2. Manejo de la Imagen Guía
     $nombre_imagen = "";
@@ -26,35 +29,40 @@ if (isset($_POST['guardar_ejercicio'])) {
     }
 
     // 3. Decidir si es INSERT o UPDATE
-    if ($id > 0) {
-        // --- LÓGICA DE ACTUALIZACIÓN ---
-        $extra_img = ($nombre_imagen != "") ? ", imagen_guia='$nombre_imagen'" : "";
-        
-        $query = "UPDATE series_ejercicio SET 
-                  nombre='$nombre', 
-                  descripcion='$descripcion', 
-                  series=$series, 
-                  repeticiones=$repeticiones, 
-                  frecuencia='$frecuencia', 
-                  nivel_dificultad='$nivel_dificultad', 
-                  precauciones='$precauciones'
-                  $extra_img 
-                  WHERE id_ejercicio = $id";
-    } else {
-        // --- LÓGICA DE INSERCIÓN ---
-        $img_final = ($nombre_imagen != "") ? $nombre_imagen : "default_ejercicio.jpg";
-        
-        $query = "INSERT INTO ejercicio 
-                  (nombre, descripcion, series, repeticiones, frecuencia, nivel_dificultad, precauciones, imagen_guia) 
-                  VALUES 
-                  ('$nombre', '$descripcion', $series, $repeticiones, '$frecuencia', '$nivel_dificultad', '$precauciones', '$img_final')";
-    }
+if ($id > 0) {
+    // --- LÓGICA DE ACTUALIZACIÓN ---
+    $extra_img = ($nombre_imagen != "") ? ", imagen_guia='$nombre_imagen'" : "";
+    
+    // IMPORTANTE: id_categoria no lleva comillas simples por ser INT
+    $query = "UPDATE series_ejercicio SET 
+              nombre = '$nombre', 
+              descripcion = '$descripcion', 
+              series = $series, 
+              repeticiones = $repeticiones, 
+              frecuencia = '$frecuencia', 
+              nivel_dificultad = '$nivel_dificultad', 
+              precauciones = '$precauciones',
+              id_categoria = $id_categoria
+              $extra_img 
+              WHERE id_ejercicio = $id";
+} else {
+    // --- LÓGICA DE INSERCIÓN ---
+    $img_final = ($nombre_imagen != "") ? $nombre_imagen : "default_ejercicio.jpg";
+    
+    // Asegúrate de que el orden de las columnas coincida EXACTAMENTE con los VALUES
+    $query = "INSERT INTO series_ejercicio 
+              (nombre, descripcion, series, repeticiones, frecuencia, nivel_dificultad, precauciones, imagen_guia, id_categoria) 
+              VALUES 
+              ('$nombre', '$descripcion', $series, $repeticiones, '$frecuencia', '$nivel_dificultad', '$precauciones', '$img_final', $id_categoria)";
+}
 
     // 4. Ejecución y Redirección
     if (mysqli_query($conexion, $query)) {
+        // Redirigimos de vuelta con éxito
         header("Location: ../admin.php?sec=ejercicio&status=success");
         exit();
     } else {
+        // Si hay un error, lo mostramos para depurar (Medicina de precisión)
         echo "Error en la base de datos: " . mysqli_error($conexion);
     }
 } else {
