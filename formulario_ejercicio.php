@@ -1,5 +1,6 @@
 <?php 
-$conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion2");
+session_start();
+include 'config/conexion.php'; 
 // 1. Lógica de carga de datos 
 $datos_ejercicio = [
     'nombre' => '', 

@@ -1,6 +1,6 @@
 <?php 
 session_start();
-$conexion = mysqli_connect("localhost", "root", "", "rv_rehabilitacion2");
+include 'config/conexion.php'; 
 
 // Protección de sesión
 if (!isset($_SESSION['admin_auth'])) {

@@ -6,20 +6,6 @@ if (!isset($_SESSION['admin_auth']) || $_SESSION['rol'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
-// --- LÓGICA DE LOGIN ---
-if (isset($_POST['login'])) {
-    $usuario = mysqli_real_escape_string($conexion, $_POST['user']);
-    $password = $_POST['pass']; // Para el proyecto escolar, comparación directa
-
-    if (($usuario == 'Mercedes' && $password == '12345') ||
-        ($usuario == 'Cela' && $password == '1224') ||
-        ($usuario == 'Eduardo' && $password == 'admin123')){
-        $_SESSION['admin_auth'] = true;
-        $_SESSION['admin_user'] = $usuario;
-    } else {
-        $error_login = "Usuario o contraseña incorrectos";
-    }
-}
 
 // --- LÓGICA DE CERRAR SESIÓN ---
 if (isset($_GET['logout'])) {
@@ -644,11 +630,15 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
                     </div>
                     <div>
                         <label>Nombre del Médico</label>
-                        <input type="text" name="medico" placeholder="Nombre completo" required>
+                        <input type="text" name="nombre_medico" placeholder="Nombre completo" required>
+                    </div>
+                    <div>
+                        <label>Ejercicio</label>
+                        <input type="int" name="id_ejercicio" placeholder="Ejercicio a realizar" required>
                     </div>
                 </div>
-                <label>Indicación / Medicamento</label>
-                <textarea name="indicaciones" placeholder="Escribe aquí las instrucciones..." required style="height: 80px;"></textarea>
+                <label>Indicación / Observaciones</label>
+                <textarea name="observacion" placeholder="Escribe aquí las instrucciones..." required style="height: 80px;"></textarea>
                 <button type="submit" name="guardar_receta_completa" class="btn-med btn-blue" style="margin-top: 15px;">+ Generar Receta Oficial</button>
             </form>
         </div>
@@ -681,7 +671,7 @@ $seccion = isset($_GET['sec']) ? $_GET['sec'] : 'videos';
 <?php if($seccion == 'inicio'): 
     // Consultas rápidas
     $count_p = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM usuarios"));
-    $count_r = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM recetario WHERE DATE(fecha) = CURDATE()"));
+    $count_r = mysqli_fetch_assoc(mysqli_query($conexion, "SELECT COUNT(*) as total FROM receta WHERE DATE(fecha) = CURDATE()"));
 ?>
     <h1>Panel General de TERVI</h1>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">

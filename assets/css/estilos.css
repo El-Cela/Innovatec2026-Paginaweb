@@ -56,15 +56,93 @@ body {
     letter-spacing: -1px;
 }
 
-/* Botón Hamburguesa - OCULTO EN PC */
+/* ==========================================================================
+   Estilos para el Botón Hamburguesa e interactividad Móvil
+   ========================================================================== */
+
+/* 1. Ocultar el botón hamburguesa por defecto en pantallas grandes */
 .menu-toggle {
-    display: none; /* ESTO ES LO QUE FALTABA */
+    display: none;
     flex-direction: column;
-    gap: 5px;
     cursor: pointer;
-    background: none;
+    background: transparent;
     border: none;
-    padding: 10px;
+    outline: none;
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333; /* Cambia esto por el color de tus textos/iconos */
+    margin: 4px 0;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Media Query para pantallas móviles (Menores a 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Mostrar el botón hamburguesa */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Ocultar y posicionar el menú de navegación */
+    .menu {
+        position: absolute;
+        top: 60px; /* Ajusta esto según el alto de tu header */
+        left: -100%; /* Lo esconde fuera de la pantalla a la izquierda */
+        width: 100%;
+        height: calc(100vh - 60px);
+        background-color: #fff; /* Fondo del menú móvil */
+        transition: all 0.4s ease;
+        overflow-y: auto;
+    }
+
+    /* Estructurar la lista en vertical */
+    .menu ul {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .menu ul li {
+        margin: 15px 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* --- CLASES ACTIVAS (Se activan con el JS) --- */
+
+    /* Muestra el menú deslizándolo desde la izquierda */
+    .menu.active {
+        left: 0;
+    }
+
+    /* Animación del botón hamburguesa transformándose en una "X" */
+    .menu-toggle.active .bar:nth-child(1) {
+        transform: translateY(11px) rotate(45deg);
+    }
+
+    .menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active .bar:nth-child(3) {
+        transform: translateY(-11px) rotate(-45deg);
+    }
+    
+    /* Ajuste extra: submenú de salud en modo móvil */
+    .sub-menu-salud {
+        position: relative;
+        width: 100%;
+        box-shadow: none;
+        display: none;
+    }
+    
+    .sub-menu-salud.mostrar-menu {
+        display: block;
+    }
 }
 
 .bar {

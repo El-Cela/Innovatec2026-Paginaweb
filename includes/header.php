@@ -10,7 +10,7 @@ include_once 'config/conexion.php';
 <head>
     <meta charset="UTF-8">
     <title>TERVI</title>
-    <link rel="stylesheet" href="/assets/css/estilos.css">
+    <link rel="stylesheet" href="assets/css/estilos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -40,7 +40,7 @@ include_once 'config/conexion.php';
                     <?php if(isset($_SESSION['id_usuario'])): 
                         // Lógica de notificaciones
                         $id_u = $_SESSION['id_usuario'];
-                        $notif = mysqli_query($conexion, "SELECT COUNT(*) as nuevas FROM recetario WHERE id_usuario = $id_u AND visto = 0");
+                        $notif = mysqli_query($conexion, "SELECT COUNT(*) as nuevas FROM receta WHERE id_usuario = $id_u AND visto = 0");
                         $n = mysqli_fetch_assoc($notif);
                     ?>
                         <li class="nav-especial">
@@ -54,7 +54,7 @@ include_once 'config/conexion.php';
                             </a>
                             <ul class="sub-menu-salud">
                                 <li><a href="historial_clinico.php"><i class="fas fa-file-medical"></i> HISTORIAL</a></li>
-                                <li><a href="recetario.php"><i class="fas fa-pills"></i> RECETARIO</a></li>
+                                <li><a href="recetario.php"><i class="fas fa-pills"></i> RECETA</a></li>
                                 <li><a href="puntuacion.php"><i class="fas fa-star"></i> PUNTUACIONES</a></li>
                                 <li><a href="procesos/logout.php" class="link-salir"><i class="fas fa-sign-out-alt"></i> SALIR</a></li>
                             </ul>
@@ -72,6 +72,19 @@ include_once 'config/conexion.php';
     </header>
 
 <script>
+// Lógica para el botón Hamburguesa
+const mobileMenu = document.getElementById('mobile-menu');
+const navMenu = document.getElementById('nav-menu');
+
+if (mobileMenu && navMenu) {
+    mobileMenu.addEventListener('click', () => {
+        // Alterna la clase 'active' tanto en el botón como en el menú
+        mobileMenu.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+}
+
+// Lógica para el submenú "MI SALUD" (Tu código existente optimizado)
 const navEspecial = document.querySelector('.nav-especial');
 const btnSalud = document.querySelector('.perfil-usuario');
 const subMenu = document.querySelector('.sub-menu-salud');
@@ -83,7 +96,7 @@ if (btnSalud && subMenu) {
     });
 
     document.addEventListener('click', (e) => {
-        if (!navEspecial.contains(e.target)) {
+        if (navEspecial && !navEspecial.contains(e.target)) {
             subMenu.classList.remove('mostrar-menu');
         }
     });

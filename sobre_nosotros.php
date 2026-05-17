@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre Nosotros | TREVI</title>
-    <link rel="stylesheet" href="/assets/css/nosotros.css">
+    <link rel="stylesheet" href="assets/css/nosotros.css">
 </head>
 <body>
 <main class="contenedor-principal-limpio">
@@ -17,7 +17,7 @@
                 <p>Nuestra motivación nace de la convicción de que la recuperación debe ser un camino de independencia. TERVI es el puente digital entre la terapia física y la fuerza emocional.</p>
             </div>
             <div class="intro-imagen">
-                <img src="/assets/img/medical-assistant-helping-patients-with-physiotherapy-exercises.jpg" alt="Rehabilitación TERVI">
+                <img src="assets/img/medical-assistant-helping-patients-with-physiotherapy-exercises.jpg" alt="Rehabilitación TERVI">
             </div>
         </div>
     </section>

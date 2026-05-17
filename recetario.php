@@ -10,7 +10,7 @@ $check_pago = mysqli_query($conexion, "SELECT * FROM ventas WHERE id_usuario = $
 $es_pro = mysqli_num_rows($check_pago) > 0;
 
 // Marcamos como vistas (puedes ajustar esta lógica según tu necesidad)
-mysqli_query($conexion, "UPDATE recetario SET visto = 1 WHERE id_usuario = $id_u");
+mysqli_query($conexion, "UPDATE receta SET visto = 1 WHERE id_usuario = $id_u");
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,13 +33,15 @@ mysqli_query($conexion, "UPDATE recetario SET visto = 1 WHERE id_usuario = $id_u
         <thead>
             <tr>
                 <th>Fecha</th>
-                <th>Indicación / Medicamento</th>
+                <th>Indicación / Observacion</th>
                 <th>Doctor</th>
+                <th>Repeticiones</th>
+                <th>Ejercicio</th>
             </tr>
         </thead>
         <tbody>
             <?php 
-            $res = mysqli_query($conexion, "SELECT * FROM recetario WHERE id_usuario = $id_u ORDER BY fecha DESC");
+            $res = mysqli_query($conexion, "SELECT * FROM receta WHERE id_usuario = $id_u ORDER BY fecha DESC");
             $contador = 0;
             
             if(mysqli_num_rows($res) > 0){
@@ -52,22 +54,28 @@ mysqli_query($conexion, "UPDATE recetario SET visto = 1 WHERE id_usuario = $id_u
                         <td><?= date('d/m/Y', strtotime($r['fecha'])) ?></td>
                         <td>
                             <?php if ($bloqueado): ?>
-                                <span style="filter: blur(4px); user-select: none;">INDICACIÓN BLOQUEADA POR PLAN GRATUITO</span>
+                                <span style="filter: blur(4px); user-select: none;">OBSERVACIÓN BLOQUEADA POR PLAN GRATUITO</span>
                                 <br>
                                 <a href="pago.php" style="color: #D4AF37; font-size: 0.8rem; font-weight: bold; text-decoration: none;">
                                     <i class="fas fa-lock"></i> Suscríbete para ver esta receta
                                 </a>
                             <?php else: ?>
-                                <strong><?= nl2br(htmlspecialchars($r['indicacion'])) ?></strong>
+                                <strong><?= nl2br(htmlspecialchars($r['observacion'])) ?></strong>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?= $bloqueado ? '---' : htmlspecialchars($r['nombre_doctor']) ?>
                         </td>
+                        <td>
+                            <?= $bloqueado ? '---' : $r['repeticiones'] ?>
+                        </td>
+                        <td>
+                            <?= $bloqueado ? '---' : htmlspecialchars($r['id_ejercicio']) ?>
+                        </td>
                     </tr>
                 <?php }
             } else {
-                echo "<tr><td colspan='3' style='text-align:center; padding:50px; color:#999;'>No se han encontrado recetas vinculadas.</td></tr>";
+                echo "<tr><td colspan='5' style='text-align:center; padding:50px; color:#999;'>No se han encontrado recetas vinculadas.</td></tr>";
             }
             ?>
         </tbody>
